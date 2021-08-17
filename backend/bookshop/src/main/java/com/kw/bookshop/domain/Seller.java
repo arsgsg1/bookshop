@@ -9,11 +9,9 @@ import java.util.List;
 
 @Entity
 public class Seller extends ShopUser {
-  @OneToMany(
-      mappedBy = "seller",
-      fetch = FetchType.EAGER,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+  private long benefit;
+
+  @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Book> books = new ArrayList<>();
 
   protected Seller() {}
@@ -24,5 +22,19 @@ public class Seller extends ShopUser {
     super.setEmail(email);
     super.setLoginId(loginId);
     super.setPassword(password);
+    this.benefit = 0;
+  }
+
+  public void registerBookForSale(Book book) {
+    book.changeSeller(this);
+    this.books.add(book);
+  }
+
+  public boolean deleteBookById(Long id) {
+    return books.removeIf(b -> b.getId() == id);
+  }
+
+  public void saleBook(Book book) {
+    this.benefit += book.getPrice();
   }
 }

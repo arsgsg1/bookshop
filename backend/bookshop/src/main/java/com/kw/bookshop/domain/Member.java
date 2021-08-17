@@ -1,11 +1,6 @@
 package com.kw.bookshop.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Member extends ShopUser {
@@ -19,5 +14,14 @@ public class Member extends ShopUser {
     super.setEmail(email);
     super.setLoginId(loginId);
     super.setPassword(password);
+    this.point = 0;
+  }
+
+  public void purchaseBook(Book book) {
+    if (this.point < book.getPrice()) {
+      throw new IllegalArgumentException("잔여 포인트가 부족합니다.");
+    }
+    book.getSeller().saleBook(book);
+    this.point -= book.getPrice();
   }
 }
