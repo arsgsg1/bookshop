@@ -12,4 +12,6 @@ public interface JpaSellerRepository extends JpaRepository<Seller, Long>, Seller
   Optional<Seller> findById(Long id);
 
   Seller save(Seller seller);
+
+  void deleteById(Long id);
 }

@@ -3,19 +3,11 @@ package com.kw.bookshop.CommandExecutorTest;
 import com.kw.bookshop.application.ShopCommandExecutor;
 import com.kw.bookshop.application.dto.request.CreateOrUpdateBookDto;
 import com.kw.bookshop.domain.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext.*;
-import org.springframework.test.annotation.DirtiesContext;
-
-import javax.transaction.Transactional;
 
 @SpringBootTest
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD) // 각 테스트가 다른 테스트에 영향을 끼치지 않게 하기 위함.
 public class ShopCommandExecutorTest {
   @Autowired private ShopCommandExecutor commandExecutor;
   @Autowired private BookRepository bookRepository;
@@ -24,7 +16,6 @@ public class ShopCommandExecutorTest {
   private Long deleteBookId;
   private final Long listSize = 3L;
 
-  @Transactional
   @BeforeEach
   public void setup() {
     for (long i = 1; i <= listSize; i++) {
@@ -32,6 +23,11 @@ public class ShopCommandExecutorTest {
     }
     sellerRepository.save(seller);
     deleteBookId = seller.getBooks().get(1).getId();
+  }
+
+  @AfterEach
+  public void cleanup() {
+    sellerRepository.deleteById(seller.getId());
   }
 
   @DisplayName("판매 책 등록")
